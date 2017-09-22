@@ -2,7 +2,7 @@ import sqlite3
 import json
 import codecs
 import os
-import argparse
+
 
 cx = sqlite3.connect(
     os.path.expanduser('~') + \
@@ -72,18 +72,3 @@ def main(absPath=None):
     playlists = getPlaylist()
     for item in playlists:
         writePlaylistToFile(item[0], item[1], absPath)
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter,
-                                     description='NeteaseCloudMusicPlaylistConvert')
-    parser.add_argument('-a', '--abs', help='M2U 中使用绝对路径')
-    parser.add_argument('-p', '--path', help='网易云音乐下载目录绝对路径')
-    useAbsPath = parser.parse_args().abs
-    absPath = parser.parse_args().path
-    if not absPath:
-        absPath = os.getcwd()
-    if not absPath.endswith('\\'):
-        absPath += '\\'
-    if str(useAbsPath).upper() != "TRUE":
-        absPath = None
-    main(absPath)
