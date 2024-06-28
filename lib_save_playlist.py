@@ -62,10 +62,9 @@ def writePlaylistToFile(pid, playlistName, absPath=None):
                         songpath = songpath.replace(".ncm",".flac")
                     elif os.path.isfile(songpath.replace(".ncm",".mp3")):
                         songpath = songpath.replace(".ncm",".mp3")
-                    elif songpath.find(".ncm") >=0:
-                        print("Warning: file not decrypted", songpath, "find a way to convert ncm to mp3 or flac files first")
                     else:
-                        print("Warning: file not found: ", songpath, "download all the song in the playlist first, or specify the donwload path for CloudMusic with -p")
+                        print("Warning: file not decrypted", songpath, "find a way to convert ncm to mp3 or flac files first")
+                    
                     count=count + 1
                     file.writelines("\n#EXTINF:" + detail[0] + "\n" + songpath)
     except Exception as e:
