@@ -40,6 +40,13 @@ def getOfflineMusicDetail(tid, absPath=None):
     return detail
 
 def writePlaylistToFile(pid, playlistName, absPath=None):
+    # avoid illegal characters in playlist names
+    if playlistName.find("/") >= 0 or playlistName.find("|") >= 0:
+        playlistName = playlistName.replace("/","")
+        playlistName = playlistName.replace("|","")
+    if playlistName.find("?") >= 0 or playlistName.find("!") >= 0:
+        playlistName = playlistName.replace("?","")
+        playlistName = playlistName.replace("!","")
     file = codecs.open(playlistName + ".m3u", "w", "utf-8")
     count = 0
     try:
@@ -49,8 +56,18 @@ def writePlaylistToFile(pid, playlistName, absPath=None):
             if tid is not None:
                 detail=getOfflineMusicDetail(tid, absPath)
                 if detail is not None:
+                    songpath = detail[1]
+                    # create decrpted playlist
+                    if  os.path.isfile(songpath.replace(".ncm",".flac")):
+                        songpath = songpath.replace(".ncm",".flac")
+                    elif os.path.isfile(songpath.replace(".ncm",".mp3")):
+                        songpath = songpath.replace(".ncm",".mp3")
+                    elif songpath.find(".ncm") >=0:
+                        print("Warning: file not decrypted", songpath, "find a way to convert ncm to mp3 or flac files first")
+                    else:
+                        print("Warning: file not found: ", songpath, "download all the song in the playlist first, or specify the donwload path for CloudMusic with -p")
                     count=count + 1
-                    file.writelines("\n#EXTINF:" + detail[0] + "\n" + detail[1])
+                    file.writelines("\n#EXTINF:" + detail[0] + "\n" + songpath)
     except Exception as e:
         raise
     else:
