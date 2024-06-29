@@ -41,12 +41,8 @@ def getOfflineMusicDetail(tid, absPath=None):
 
 def writePlaylistToFile(pid, playlistName, absPath=None):
     # avoid illegal characters in playlist names
-    if playlistName.find("/") >= 0 or playlistName.find("|") >= 0:
-        playlistName = playlistName.replace("/","")
-        playlistName = playlistName.replace("|","")
-    if playlistName.find("?") >= 0 or playlistName.find("!") >= 0:
-        playlistName = playlistName.replace("?","")
-        playlistName = playlistName.replace("!","")
+    playlistName = playlistName.replace("/","").replace("|","").replace("?","").replace("!","")
+
     file = codecs.open(playlistName + ".m3u", "w", "utf-8")
     count = 0
     try:
@@ -58,12 +54,10 @@ def writePlaylistToFile(pid, playlistName, absPath=None):
                 if detail is not None:
                     songpath = detail[1]
                     # create decrpted playlist
-                    if  os.path.isfile(songpath.replace(".ncm",".flac")):
+                    if  songpath.endswith(".ncm") and os.path.isfile(songpath.replace(".ncm",".flac")):
                         songpath = songpath.replace(".ncm",".flac")
-                    elif os.path.isfile(songpath.replace(".ncm",".mp3")):
-                        songpath = songpath.replace(".ncm",".mp3")
                     else:
-                        print("Warning: file not decrypted", songpath, "find a way to convert ncm to mp3 or flac files first")
+                        songpath = songpath.replace(".ncm",".mp3")
                     
                     count=count + 1
                     file.writelines("\n#EXTINF:" + detail[0] + "\n" + songpath)
